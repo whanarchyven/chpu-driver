@@ -1,0 +1,15 @@
+node_modules
+dist
+.env.local
+.convex
+*.log
+agent/**/bin
+agent/**/obj
+agent/lib/syntec
+agent/lib/syntec-10.118
+agent/redist
+agent/publish
+agent/usb
+agent/outbox.json
+agent/state.json
+server/.env

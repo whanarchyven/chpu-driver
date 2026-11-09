@@ -1,0 +1,14 @@
+{
+  "BaseUrl": "http://192.168.77.1:3221",
+  "Token": "cnc-stand-dev",
+  "MachineId": "velber-1",
+  "Link": "fake",
+  "CncIp": "192.168.77.10",
+  "PollSec": 2,
+  "AutoSelectMain": true,
+  "DeliverAhead": 3,
+  "RemoteDir": "",
+  "FakeDir": "fake-cnc",
+  "FakeAutoStartSec": 0,
+  "FakeLinesPerSec": 200
+}

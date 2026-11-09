@@ -1,0 +1,69 @@
+# One-command server for the CNC queue: Convex backend, its dashboard and the web UI.
+# Started by server/start.sh (Linux) or Запустить-сервер.cmd (Windows).
+# Ports differ from laser-erp so both servers can run on one computer.
+name: cnc-erp
+
+services:
+  firewall:
+    image: alpine:3.20
+    network_mode: host
+    cap_add: ["NET_ADMIN"]
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        if command -v iptables >/dev/null 2>&1; then
+          for p in ${PORT:-3220} ${SITE_PROXY_PORT:-3221} ${WEB_PORT:-5174} ${DASHBOARD_PORT:-6792}; do
+            iptables -C INPUT -p tcp --dport $$p -j ACCEPT 2>/dev/null || iptables -I INPUT -p tcp --dport $$p -j ACCEPT || true
+          done
+        fi
+        sleep infinity
+    restart: "no"
+
+  backend:
+    image: ghcr.io/convex/convex-backend:latest
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - "${PORT:-3220}:3210"
+      - "${SITE_PROXY_PORT:-3221}:3211"
+    volumes:
+      - convex-data:/convex/data
+    environment:
+      - CONVEX_CLOUD_ORIGIN=${CONVEX_CLOUD_ORIGIN}
+      - CONVEX_SITE_ORIGIN=${CONVEX_SITE_ORIGIN}
+      - INSTANCE_NAME=${INSTANCE_NAME}
+      - INSTANCE_SECRET=${INSTANCE_SECRET}
+      - DISABLE_BEACON=1
+      - DISABLE_METRICS_ENDPOINT=true
+      - RUST_LOG=${RUST_LOG:-info}
+    healthcheck:
+      test: curl -f http://localhost:3210/version
+      interval: 5s
+      start_period: 15s
+
+  dashboard:
+    image: ghcr.io/convex/convex-dashboard:latest
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - "${DASHBOARD_PORT:-6792}:6791"
+    environment:
+      - NEXT_PUBLIC_DEPLOYMENT_URL=${CONVEX_CLOUD_ORIGIN}
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+      args:
+        VITE_CONVEX_URL: ${CONVEX_CLOUD_ORIGIN}
+    ports:
+      - "${WEB_PORT:-5174}:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  convex-data:

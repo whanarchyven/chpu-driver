@@ -1,0 +1,25 @@
+{
+  "name": "cnc-erp",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:backend": "convex dev",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "check-parse": "node --experimental-strip-types scripts/check-parse.ts"
+  },
+  "dependencies": {
+    "convex": "^1.27.3",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.5"
+  }
+}

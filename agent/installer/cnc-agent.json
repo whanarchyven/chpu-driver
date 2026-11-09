@@ -1,0 +1,15 @@
+{
+  "BaseUrl": "",
+  "Token": "",
+  "MachineId": "velber-1",
+  "Link": "syntec",
+  "CncIp": "",
+  "CncTimeoutMs": 5000,
+  "SyntecLib": "auto",
+  "RemoteDir": "",
+  "FtpUser": "",
+  "FtpPassword": "",
+  "PollSec": 2,
+  "AutoSelectMain": true,
+  "DeliverAhead": 3
+}
