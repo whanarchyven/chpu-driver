@@ -21,6 +21,10 @@ services:
 
   backend:
     image: ghcr.io/convex/convex-backend:latest
+    # The image entrypoint is ./run_backend.sh. Docker Desktop on Windows
+    # rejects that script with "exec format error" even when the image and
+    # the CPU are both amd64; /bin/bash inside the image runs it.
+    entrypoint: ["/bin/bash", "./run_backend.sh"]
     stop_grace_period: 10s
     stop_signal: SIGINT
     ports:
