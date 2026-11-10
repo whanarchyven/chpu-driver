@@ -21,10 +21,12 @@ services:
 
   backend:
     image: ghcr.io/convex/convex-backend:latest
-    # The image entrypoint is ./run_backend.sh. Docker Desktop on Windows
-    # rejects that script with "exec format error" even when the image and
-    # the CPU are both amd64; /bin/bash inside the image runs it.
-    entrypoint: ["/bin/bash", "./run_backend.sh"]
+    # Docker Desktop on Windows cannot exec the image entrypoint ./run_backend.sh
+    # (exec format error). The Ubuntu base image also leaves CMD ["bash"], so
+    # overriding the entrypoint still exits immediately. Start the binary itself.
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - 'mkdir -p /convex/data/tmp /convex/data/storage && exec ./convex-local-backend --instance-name "$$INSTANCE_NAME" --instance-secret "$$INSTANCE_SECRET" --port 3210 --site-proxy-port 3211 --convex-origin "$$CONVEX_CLOUD_ORIGIN" --convex-site "$$CONVEX_SITE_ORIGIN" --beacon-tag self-hosted-docker --disable-beacon --local-storage /convex/data/storage /convex/data/db.sqlite3'
     stop_grace_period: 10s
     stop_signal: SIGINT
     ports:
