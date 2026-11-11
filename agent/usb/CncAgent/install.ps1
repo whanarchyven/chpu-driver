@@ -1,4 +1,4 @@
-﻿﻿param(
+﻿param(
   [string]$ServerIp,
   [string]$CncIp,
   [string]$BaseUrl,

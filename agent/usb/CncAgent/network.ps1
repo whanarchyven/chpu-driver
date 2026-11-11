@@ -1,4 +1,4 @@
-﻿﻿# Shared network helpers for install.ps1 and set-ip.ps1.
+﻿# Shared network helpers for install.ps1 and set-ip.ps1.
 
 function Test-Ipv4([string]$text) {
   $parsed = $null
